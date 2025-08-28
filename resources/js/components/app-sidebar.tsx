@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, UsersRound } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Notebook, UsersRound } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -19,6 +19,11 @@ const mainNavItems: NavItem[] = [
         href: '/users',
         icon: UsersRound,
     },
+    {
+        title:"Roles",
+        href:'/roles',
+        icon:Notebook
+    }
 ];
 
 const footerNavItems: NavItem[] = [

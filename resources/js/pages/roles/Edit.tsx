@@ -5,30 +5,40 @@ import { route } from 'ziggy-js';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'User Edit',
-        href: '/users',
+        title: 'Roles',
+        href: '/roles',
     },
 ];
 
-export default function Edit({user}) {
+export default function Edit({ role, rolesPermissions, permissions }) {
     const { data, setData, errors, put } = useForm({
-        name: user.name || "",
-        email: user.email || "",
-        password: '',
+        name: role.name || '',
+        permissions: rolesPermissions || [],
     });
+
+    function handleCheckboxChange(permissionName, checked) {
+        if (checked) {
+            setData('permissions', [...data.permissions, permissionName]);
+        } else {
+            setData(
+                'permissions',
+                data.permissions.filter((name) => name !== permissionName),
+            );
+        }
+    }
 
     function submit(e: any) {
         e.preventDefault();
-        put(route('users.update',user.id));
+        put(route('roles.update', role.id));
     }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Users Edit" />
+            <Head title="Roles Edit" />
             <div>
                 <Link
                     className="mr-2 cursor-pointer rounded bg-blue-500 px-3 py-2 text-xs font-medium text-white hover:bg-blue-600"
-                    href={route('users.index')}
+                    href={route('roles.index')}
                 >
                     Back
                 </Link>
@@ -46,45 +56,30 @@ export default function Edit({user}) {
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             name="name"
-                            placeholder="Enter your name"
+                            placeholder="Enter roles name"
                             className="focus:ring-opacity-50 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                         />
                         {errors.name && <p className="mt-1 text-sm text-red-500"> {errors.name}</p>}
                     </div>
 
-                    {/* Name */}
                     <div>
-                        <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
-                            Email
+                        <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
+                            Permission {data.permissions}
                         </label>
-                        <input
-                            type="text"
-                            id="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            name="email"
-                            placeholder="Enter your email"
-                            className="focus:ring-opacity-50 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                        />
-                        {errors.name && <p className="mt-1 text-sm text-red-500"> {errors.email}</p>}
-                    </div>
-
-
-                      {/* Password */}
-                      <div>
-                        <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            name="password"
-                            placeholder="Enter your password"
-                            className="focus:ring-opacity-50 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                        />
-                        {errors.password && <p className="mt-1 text-sm text-red-500"> {errors.password}</p>}
+                        {permissions.map((permission) => (
+                            <label key={permission} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    className="form-checkbox h-5 w-5 rounded text-blue-600 focus:ring-1 focus:ring-2"
+                                    value={permission}
+                                    checked={data.permissions.includes(permission)}
+                                    id={permission}
+                                    onChange={(e) => handleCheckboxChange(permission, e.target.checked)}
+                                />
+                                <span className="text-gray-800 capitalize">{permission}</span>
+                            </label>
+                        ))}
+                        {errors.permissions && <p className="mt-1 text-sm text-red-500"> {errors.name}</p>}
                     </div>
 
                     {/* Submit */}
